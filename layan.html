@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>صفحة ليان عصويد</title>
+
+<style>
+body{
+    margin:0;
+    font-family: Arial, sans-serif;
+    background:#4b3621 url('IMG_3321.JPG') center/cover no-repeat;
+    color:#f5f5dc;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    text-align:center;
+}
+
+.container{
+    background:rgba(0,0,0,0.4);
+    padding:35px;
+    border-radius:25px;
+    width:90%;
+    max-width:600px;
+    border:1px solid #d2b48c;
+}
+
+marquee{
+    font-size:24px;
+    font-weight:bold;
+    color:#d2b48c;
+    margin-bottom:25px;
+}
+
+a{
+    display:inline-block;
+    margin:8px;
+    padding:10px 22px;
+    background:#f5f5dc;
+    color:#4b3621;
+    text-decoration:none;
+    border-radius:30px;
+    font-weight:bold;
+    transition:.3s;
+}
+
+a:hover{
+    background:#d2b48c;
+    transform:scale(1.05);
+}
+
+#prayer-times{
+    margin-top:25px;
+    padding-top:15px;
+    border-top:1px dashed #d2b48c;
+}
+
+.time-box{
+    display:flex;
+    justify-content:space-around;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:15px;
+}
+
+.time-item{
+    background:rgba(210,180,140,0.15);
+    padding:8px;
+    border-radius:10px;
+    min-width:75px;
+}
+
+footer{
+    margin-top:30px;
+    font-size:13px;
+    color:#d2b48c;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<marquee scrollamount="6">
+اذكر الله يذكرك .. سبحان الله وبحمده سبحان الله العظيم
+</marquee>
+
+<div>
+<a href="good.html">أذكار الصباح</a>
+<a href="moon.html">أذكار المساء</a>
+</div>
+
+<div id="prayer-times">
+<h3 style="color:#d2b48c;">أوقات الصلاة في موقعك</h3>
+<p id="location-status">جاري تحديد موقعك بدقة...</p>
+
+<div id="times-display" class="time-box" style="display:none;">
+<div class="time-item">الفجر<br><span id="fajr"></span></div>
+<div class="time-item">الظهر<br><span id="dhuhr"></span></div>
+<div class="time-item">العصر<br><span id="asr"></span></div>
+<div class="time-item">المغرب<br><span id="maghrib"></span></div>
+<div class="time-item">العشاء<br><span id="isha"></span></div>
+</div>
+</div>
+
+<footer>
+All Rights Reserved to Layan Aswid &copy;
+</footer>
+
+</div>
+
+<script>
+window.onload=function(){
+if(navigator.geolocation){
+navigator.geolocation.getCurrentPosition(showPosition,showError);
+}else{
+document.getElementById("location-status").innerHTML="المتصفح لا يدعم تحديد الموقع.";
+}
+};
+
+function showPosition(position){
+let lat=position.coords.latitude;
+let lon=position.coords.longitude;
+
+fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=4`)
+.then(response=>response.json())
+.then(data=>{
+let t=data.data.timings;
+document.getElementById("fajr").innerText=t.Fajr;
+document.getElementById("dhuhr").innerText=t.Dhuhr;
+document.getElementById("asr").innerText=t.Asr;
+document.getElementById("maghrib").innerText=t.Maghrib;
+document.getElementById("isha").innerText=t.Isha;
+
+document.getElementById("location-status").innerHTML="تم التحديث بناءً على موقعك الحالي";
+document.getElementById("times-display").style.display="flex";
+});
+}
+
+function showError(){
+document.getElementById("location-status").innerHTML="يرجى السماح بالوصول للموقع لعرض الأوقات بدقة.";
+}
+</script>
+
+</body>
+</html>
